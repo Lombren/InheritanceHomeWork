@@ -13,6 +13,7 @@ class Worker
 {
 
 	string name;
+	string surname;
 	unsigned int age;
 
 public:
@@ -20,14 +21,22 @@ public:
 	{
 		return this->name;
 	}
+	const string& get_surname()const
+	{
+		return this->surname;
+	}
 	unsigned int get_age()const
 	{
 		return this->age;
 	}
 
-	void set_name(string& name)
+	void set_name(const string& name)
 	{
 		this->name = name;
+	}
+	void set_surname(const string& surname)
+	{
+		this->surname = surname;
 	}
 	void set_age(unsigned int age)
 	{
@@ -35,82 +44,129 @@ public:
 	}
 
 	//Конструкторы
-	Worker(string name, unsigned int age) :name(name), age(age)
+	Worker(const string& name, const string& surname, unsigned int age) :name(name), age(age)
 	{
+		set_name(name);
+		set_surname(surname);
+		set_age(age);
 		cout << "WConstructor:\t" << this << endl;
 	}
-	~Worker()
+	virtual ~Worker()
 	{
 		cout << "WDestructor:\t" << this << endl;
 	}
 	//Методы
 	//Зарплата:
-	void cash_back();
+	virtual double get_money() const= 0;
+	
 
 };
 class HWorker :public Worker
 {
-	double money;
+	double Hsalary;
+	int hours;
 public:
-	//int cash[3]{};//coefficient
-	double cash_back()
-	{ 
-		double money = 20.8 * 8 *150;
-		return money;
-	}
-	HWorker(const string& name, unsigned int age, double cash) :Worker(name, age)
+	
+	double get_Hsalary()const
 	{
-
+		return this->Hsalary;
+	}
+	int get_hours()const
+	{
+		return this->hours;
+	}
+	void set_Hsalary(double Hsalary)
+	{
+		this->Hsalary = Hsalary;
+	}	
+	void set_hours(int hours)
+	{
+		this->hours = hours;
+	}
+	HWorker(const string& name, const string& surname, unsigned int age, double Hsalary, int hours=168) :Worker(name, surname, age)
+	{
+		set_Hsalary(Hsalary);
+		set_hours(hours);
+		cout << "HConstructor:\t" << this << endl;
 	}
 	~HWorker()
 	{
-
+		cout << "HDestructor:\t" << this << endl;
+	}
+	double get_money() const
+	{
+		return Hsalary*hours;
 	}
 
 };
 class FWorker :public Worker
 {
-	double money;
+	double salary;
 public:
-	double cash_back()
+	double get_salary()const
 	{
-		double money = 20.8 * 8 * 100;
-		return money;
+		return this->salary;
 	}
-	FWorker(const string& name, unsigned int age, double money) :Worker(name, age)
+	void set_salary(double salary)
 	{
-
+		this->salary = salary;
+	}
+	FWorker(const string& name, const string& surname, unsigned int age, double salary) :Worker(name, surname, age)
+	{
+		set_salary(salary);
+		cout << "FConstructor:\t" << this << endl;
 	}
 	~FWorker()
 	{
-
+		cout << "FDestructor:\t" << this << endl;
+	}
+	double get_money() const
+	{
+		return salary;
 	}
 };
-ostream& operator<<(ostream& os, Worker& obj)
+ostream& operator<<(ostream& os, const Worker& obj)
 {
 
-	return os << "Name: " << obj.get_name() << " \nYears:" << obj.get_age();
+	return os << "Name: " << obj.get_name() << "\tSurname: " << obj.get_surname() << " \tYears: " << obj.get_age();
 }
-ostream& operator<<(ostream& os, HWorker& obj)
+ostream& operator<<(ostream& os, const HWorker& obj)
 {
 	os << (Worker&)obj;
-	return os << "\nMoney:" << obj.cash_back() << endl;
+	return os << "\tSalary: " << obj.get_money() << "$ per "<<obj.get_hours()<<" hours";
 }
 ostream& operator<<(ostream& os, FWorker& obj)
 {
 	os << (Worker&)obj;
-	return os << "\nMoney:" << obj.cash_back() << endl;
+	return os << "\tSalary: " << obj.get_money() << "$";
 }
 void main()
 {
 	setlocale(LC_ALL, "");
-	//int cash[3] = { 150,100,75 };
-	HWorker Max("Макс", 25, cash[0]);
-	FWorker Ira("Ира", 27, 0);
-	FWorker Cristy("Кристина", 19, 0);
-	HWorker Alex("Саша", 35, cash[1]);
-	HWorker W("Виктория Викторовна", 45, cash[2]);
-	cout << Max << Ira << Cristy << Alex << W;
+	
+	/*Worker W("Василий", "Лентяй", 40);
+	cout << W << endl;*/
+	/*FWorker Anton("Antonio", "Montana", 25, 5000);
+	cout << Anton << endl;
+	HWorker Max("Max", "Volkov", 28, 50,160);
+	cout << Max << endl;*/
+	
+	Worker* department[] =
+	{
+		new FWorker("Antonio", "Montana", 25, 5000),
+		new HWorker("Max", "Volkov", 28, 100),
+		new HWorker("James","Cameron",64,200)
+	};
+	for (int i = 0; i < sizeof(department) / sizeof(Worker*); i++)
+	{
+		if(typeid(*department[i])==typeid(HWorker))	cout << *(HWorker*)department[i] << endl;
+		if(typeid(*department[i])==typeid(FWorker))	cout << *(FWorker*)department[i] << endl;
+	}
+	
+	for (int i = 0; i < sizeof(department) / sizeof(Worker*); i++)
+	{
+		delete department[i];
+	}
 
 
 }
