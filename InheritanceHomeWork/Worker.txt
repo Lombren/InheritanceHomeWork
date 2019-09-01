@@ -1,0 +1,3 @@
+Name: Antonio	Surname: Montana 	Years: 25	Salary: 5000$
+Name: Max	Surname: Volkov 	Years: 28	Salary: 16800$ per 168 hours
+Name: James	Surname: Cameron 	Years: 64	Salary: 33600$ per 168 hours
